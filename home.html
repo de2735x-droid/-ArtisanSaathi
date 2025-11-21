@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtisanSaathi - Empowering Rural Artisans</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --secondary: #4caf50;
+            --accent: #ff9800;
+            --light: #f8fdf8;
+            --dark: #1b5e20;
+            --text: #2e2e2e;
+            --error: #d32f2f;
+            --success: #388e3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Hind Siliguri', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--accent);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(46, 125, 50, 0.9), rgba(27, 94, 32, 0.9)), url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 6rem 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 2rem;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .section-title p {
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            background: var(--primary);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 5rem 0;
+            background: #f8f9fa;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .step h3 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        /* Auth Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            padding: 3rem 0;
+            background: white;
+            display: none;
+            min-height: 70vh;
+        }
+        
+        .user-welcome {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--light);
+            border-radius: 10px;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .dashboard-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--accent);
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .product-form {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+        
+        .platform-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 1.5rem 0;
+        }
+        
+        .platform-option {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .platform-option.selected {
+            border-color: var(--accent);
+            background: rgba(255, 152, 0, 0.1);
+        }
+        
+        .platform-logo {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        /* Product List */
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-image {
+            height: 200px;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .product-details {
+            padding: 1.5rem;
+        }
+        
+        .product-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .product-platforms {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .platform-badge {
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(150%);
+            transition: transform 0.4s;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: var(--success);
+        }
+        
+        .notification.error {
+            background: var(--error);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .steps {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .dashboard-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-hands-helping"></i>
+                    <span>ArtisanSaathi</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button class="btn btn-outline" id="loginBtn">Login</button>
+                    <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Empowering Rural Artisans, Connecting Cultures</h1>
+            <p>Your digital partner in craft. Sell handmade products across multiple platforms with zero upfront costs and technical barriers.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" id="heroSignup">Start Selling Now</button>
+                <button class="btn btn-outline">Watch Demo</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose ArtisanSaathi?</h2>
+                <p>We provide everything artisans need to succeed in the digital marketplace</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3>Easy Sign-Up</h3>
+                    <p>Simple profile creation with name, photo, craft type, and region. Perfect for artisans with basic digital knowledge.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <h3>Simple Product Upload</h3>
+                    <p>Easy form to add product name, price, description, and photos. No complicated options or marketplace fees.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bridge"></i>
+                    </div>
+                    <h3>Multi-Platform Bridge</h3>
+                    <p>We automatically format and connect your products to Amazon Karigar, Flipkart Samarth, Etsy, and more.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>How It Works</h2>
+                <p>Getting started is simple and takes just minutes</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Create Profile</h3>
+                    <p>Sign up with your details, craft type, and region. Showcase your story and culture.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Upload Products</h3>
+                    <p>Add your handmade products with simple forms. No technical knowledge required.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>We Handle Selling</h3>
+                    <p>We bridge your products to online marketplaces. You focus on crafting, we handle the digital part.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login to ArtisanSaathi</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#" id="showSignup">Sign up</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Join ArtisanSaathi</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" class="form-control" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPhone">Phone Number</label>
+                    <input type="tel" id="signupPhone" class="form-control" placeholder="Enter your phone number" required>
+                </div>
+                <div class="form-group">
+                    <label for="craftType">Craft Type</label>
+                    <select id="craftType" class="form-control" required>
+                        <option value="">Select your craft</option>
+                        <option value="pottery">Pottery</option>
+                        <option value="textile">Textile Weaving</option>
+                        <option value="jewelry">Jewelry Making</option>
+                        <option value="woodwork">Wood Work</option>
+                        <option value="metalwork">Metal Work</option>
+                        <option value="embroidery">Embroidery</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="region">Region/Village</label>
+                    <input type="text" id="region" class="form-control" placeholder="Enter your region or village" required>
+                </div>
+                <div class="form-group">
+                    <label for="experience">Years of Experience</label>
+                    <input type="number" id="experience" class="form-control" placeholder="Enter years of experience" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" class="form-control" placeholder="Create a password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+                <div class="form-footer">
+                    <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard" id="dashboard">
+        <div class="container">
+            <div class="user-welcome">
+                <div class="user-avatar" id="userAvatar">A</div>
+                <div>
+                    <h2>Welcome, <span id="userName">Artisan</span>!</h2>
+                    <p>Manage your products and track your journey</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-tabs">
+                <div class="tab active" data-tab="add-product">Add Product</div>
+                <div class="tab" data-tab="my-products">My Products</div>
+                <div class="tab" data-tab="profile">My Profile</div>
+                <div class="tab" id="logoutTab">Logout</div>
+            </div>
+            
+          <div class="tab-content active" id="add-product">
+    <div class="product-form">
+        <h3>List a New Product</h3>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScphIxx3U00blVvwmklKLycJ4MbZMWt_ao8sHZB_i_Tboaakw/viewform?embedded=true" width="640" height="1747" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>        <iframe src="https://docs.google.com/forms/..." 
+                width="100%" 
+                height="800" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+            Loading…
+        </iframe>
+    </div>
+</div>
+                        
+                        <div class="form-group">
+                            <label for="productDescription">Product Description</label>
+                            <textarea id="productDescription" class="form-control" rows="4" placeholder="Describe your product and its cultural significance" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productCategory">Category</label>
+                            <select id="productCategory" class="form-control" required>
+                                <option value="">Select Category</option>
+                                <option value="clothing">Clothing & Apparel</option>
+                                <option value="jewelry">Jewelry & Accessories</option>
+                                <option value="home">Home & Living</option>
+                                <option value="art">Art & Collectibles</option>
+                                <option value="crafts">Craft Supplies</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productPrice">Price (₹)</label>
+                            <input type="number" id="productPrice" class="form-control" placeholder="Enter price" min="1" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productImage">Product Images</label>
+                            <input type="file" id="productImage" class="form-control" multiple accept="image/*">
+                            <small>Upload product images (JPEG, PNG, max 5MB each)</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Select Platforms for Listing</label>
+                            <div class="platform-selector">
+                                <div class="platform-option" data-platform="amazon">
+                                    <div class="platform-logo">
+                                        <i class="fab fa-amazon"></i>
+                                    </div>
+                                    <div>Amazon </div>
+                                </div>
+                                <div class="platform-option" data-platform="flipkart">
+                                    <div class="platform-logo">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div>Flipkart </div>
+                                </div>
+                                <div class="platform-option" data-platform="etsy">
+                                    <div class="platform-logo">
+                                        <i class="fab fa-etsy"></i>
+                                    </div>
+                                    <div>Etsy</div>
+                                </div>
+                                <div class="platform-option" data-platform="meesho">
+                                    <div class="platform-logo">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <div>Meesho</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">List Product</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="my-products">
+                <h3>Your Products</h3>
+                <div class="product-list" id="userProductList">
+                    <!-- Products will be loaded here from Firebase -->
+                </div>
+            </div>
+            
+            <div class="tab-content" id="profile">
+                <h3>Your Profile</h3>
+                <div class="product-form">
+                    <div id="profileInfo">
+                        <!-- Profile info will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>ArtisanSaathi</h3>
+                    <p>Empowering rural artisans to reach global markets through multi-channel selling.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Platform Guides</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect With Us</h3>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 ArtisanSaathi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase Configuration with YOUR ACTUAL CONFIG -->
+    <script>
+        // YOUR FIREBASE CONFIG - EXACTLY FROM YOUR PROJECT
+        const firebaseConfig = {
+            apiKey: "AIzaSyAqfh_WMKAD2VbmEcGOohNnWF9VC8MWhF4",
+            authDomain: "artisansaathi.firebaseapp.com",
+            projectId: "artisansaathi",
+            storageBucket: "artisansaathi.firebasestorage.app",
+            messagingSenderId: "851294040978",
+            appId: "1:851294040978:web:9adc21b5627dc40ae1074b"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Initialize Firebase services
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        console.log("✅ Firebase initialized successfully!");
+        console.log("Project:", firebaseConfig.projectId);
+    </script>
+
+    <!-- Application Logic -->
+    <script>
+        // Show notification function
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Authentication functions
+        async function authSignUp(userData) {
+            try {
+                console.log("Starting signup process...");
+                
+                // Create user with email and password
+                const userCredential = await auth.createUserWithEmailAndPassword(
+                    userData.email, 
+                    userData.password
+                );
+                
+                console.log("User created, updating profile...");
+                
+                // Update user profile
+                await userCredential.user.updateProfile({
+                    displayName: userData.name
+                });
+                
+                // Save additional user data to Firestore
+                await db.collection('artisans').doc(userCredential.user.uid).set({
+                    name: userData.name,
+                    email: userData.email,
+                    phone: userData.phone,
+                    craftType: userData.craftType,
+                    region: userData.region,
+                    experience: userData.experience,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                console.log("Signup successful!");
+                return userCredential.user;
+                
+            } catch (error) {
+                console.error("Signup error:", error);
+                throw error;
+            }
+        }
+
+        async function authSignIn(email, password) {
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                return userCredential.user;
+            } catch (error) {
+                console.error("Login error:", error);
+                throw error;
+            }
+        }
+
+        async function authSignOut() {
+            try {
+                await auth.signOut();
+                showNotification('Successfully logged out', 'success');
+            } catch (error) {
+                showNotification('Error signing out: ' + error.message, 'error');
+            }
+        }
+
+        // Database functions
+        async function saveProductToFirebase(productData) {
+            const user = auth.currentUser;
+            if (!user) throw new Error('User not authenticated');
+
+            try {
+                let imageUrl = '';
+                
+                // Upload image if provided
+                if (productData.imageFile) {
+                    const storageRef = storage.ref();
+                    const imageRef = storageRef.child(`products/${user.uid}/${Date.now()}_${productData.imageFile.name}`);
+                    await imageRef.put(productData.imageFile);
+                    imageUrl = await imageRef.getDownloadURL();
+                }
+                
+                // Save product data to Firestore
+                const productRef = await db.collection('products').add({
+                    artisanId: user.uid,
+                    name: productData.name,
+                    description: productData.description,
+                    category: productData.category,
+                    price: productData.price,
+                    platforms: productData.platforms,
+                    imageUrl: imageUrl,
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                return productRef.id;
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        async function getUserProductsFromFirebase() {
+            const user = auth.currentUser;
+            if (!user) return [];
+
+            try {
+                const snapshot = await db.collection('products')
+                    .where('artisanId', '==', user.uid)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                
+                return snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        async function getUserProfileFromFirebase() {
+            const user = auth.currentUser;
+            if (!user) return null;
+
+            try {
+                const doc = await db.collection('artisans').doc(user.uid).get();
+                return doc.exists ? doc.data() : null;
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        // DOM elements and event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const heroSignup = document.getElementById('heroSignup');
+            const loginModal = document.getElementById('loginModal');
+            const signupModal = document.getElementById('signupModal');
+            const closeModalBtns = document.querySelectorAll('.close-modal');
+            const showSignup = document.getElementById('showSignup');
+            const showLogin = document.getElementById('showLogin');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const dashboard = document.getElementById('dashboard');
+            const logoutTab = document.getElementById('logoutTab');
+            const productForm = document.getElementById('productForm');
+            const userProductList = document.getElementById('userProductList');
+            const userName = document.getElementById('userName');
+            const userAvatar = document.getElementById('userAvatar');
+            const profileInfo = document.getElementById('profileInfo');
+
+            // Modal functionality
+            loginBtn.addEventListener('click', () => {
+                loginModal.style.display = 'flex';
+            });
+
+            signupBtn.addEventListener('click', () => {
+                signupModal.style.display = 'flex';
+            });
+
+            heroSignup.addEventListener('click', () => {
+                signupModal.style.display = 'flex';
+            });
+
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    loginModal.style.display = 'none';
+                    signupModal.style.display = 'none';
+                });
+            });
+
+            showSignup.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginModal.style.display = 'none';
+                signupModal.style.display = 'flex';
+            });
+
+            showLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                signupModal.style.display = 'none';
+                loginModal.style.display = 'flex';
+            });
+
+            // Login form
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                try {
+                    await authSignIn(email, password);
+                    loginModal.style.display = 'none';
+                    showNotification('Successfully logged in!', 'success');
+                } catch (error) {
+                    showNotification('Login error: ' + error.message, 'error');
+                }
+            });
+
+            // Signup form
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const userData = {
+                    name: document.getElementById('signupName').value,
+                    email: document.getElementById('signupEmail').value,
+                    phone: document.getElementById('signupPhone').value,
+                    craftType: document.getElementById('craftType').value,
+                    region: document.getElementById('region').value,
+                    experience: parseInt(document.getElementById('experience').value),
+                    password: document.getElementById('signupPassword').value
+                };
+                
+                try {
+                    await authSignUp(userData);
+                    signupModal.style.display = 'none';
+                    showNotification('Account created successfully!', 'success');
+                } catch (error) {
+                    showNotification('Signup error: ' + error.message, 'error');
+                }
+            });
+
+            // Logout functionality
+            logoutTab.addEventListener('click', () => {
+                authSignOut();
+            });
+
+            // Tab functionality
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    if (tab === logoutTab) return;
+                    
+                    // Remove active class from all tabs and contents
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Load profile if profile tab is clicked
+                    if (tabId === 'profile') {
+                        loadUserProfile();
+                    }
+                    
+                    // Load products if products tab is clicked
+                    if (tabId === 'my-products') {
+                        loadUserProducts();
+                    }
+                });
+            });
+            
+            // Platform selection
+            document.querySelectorAll('.platform-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    option.classList.toggle('selected');
+                });
+            });
+            
+            // Product form submission
+            productForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                // Add this for debugging
+console.log("=== DEBUG PRODUCT UPLOAD ===");
+console.log("Product Data:", {
+    name: productName,
+    price: productPrice,
+    platforms: selectedPlatforms,
+    user: auth.currentUser
+});
+
+// Check if user is logged in
+if (!auth.currentUser) {
+    showNotification('Please login first', 'error');
+    return;
+}
+                // Get form values
+                const productName = document.getElementById('productName').value;
+                const productDescription = document.getElementById('productDescription').value;
+                const productCategory = document.getElementById('productCategory').value;
+                const productPrice = document.getElementById('productPrice').value;
+                const productImage = document.getElementById('productImage').files[0];
+                
+                // Get selected platforms
+                const selectedPlatforms = [];
+                document.querySelectorAll('.platform-option.selected').forEach(platform => {
+                    selectedPlatforms.push(platform.getAttribute('data-platform'));
+                });
+                
+                // Validation
+                if (!productName || !productPrice || selectedPlatforms.length === 0) {
+                    showNotification('Please fill in all required fields and select at least one platform.', 'error');
+                    return;
+                }
+                
+                try {
+                    // Save product to Firebase
+                    const productId = await saveProductToFirebase({
+                        name: productName,
+                        description: productDescription,
+                        category: productCategory,
+                        price: parseFloat(productPrice),
+                        platforms: selectedPlatforms,
+                        imageFile: productImage
+                    });
+                    
+                    showNotification(`Product "${productName}" listed successfully!`);
+                    
+                    // Reset form
+                    this.reset();
+                    document.querySelectorAll('.platform-option.selected').forEach(platform => {
+                        platform.classList.remove('selected');
+                    });
+                    
+                    // Switch to My Products tab and reload
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    document.querySelector('[data-tab="my-products"]').classList.add('active');
+                    document.getElementById('my-products').classList.add('active');
+                    
+                    loadUserProducts();
+                    
+                } catch (error) {
+                    showNotification('Error saving product: ' + error.message, 'error');
+                }
+            });
+
+            // Load user products from Firebase
+            async function loadUserProducts() {
+                try {
+                    const products = await getUserProductsFromFirebase();
+                    userProductList.innerHTML = '';
+                    
+                    if (products.length === 0) {
+                        userProductList.innerHTML = '<p>No products listed yet. Add your first product!</p>';
+                        return;
+                    }
+                    
+                    products.forEach(product => {
+                        const productCard = document.createElement('div');
+                        productCard.className = 'product-card';
+                        productCard.innerHTML = `
+                            <div class="product-image">
+                                ${product.imageUrl ? 
+                                    `<img src="${product.imageUrl}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;">` : 
+                                    `<i class="fas fa-image fa-3x"></i>`
+                                }
+                            </div>
+                            <div class="product-details">
+                                <div class="product-title">${product.name}</div>
+                                <div class="product-price">₹${product.price}</div>
+                                <div class="product-platforms">
+                                    ${product.platforms.map(platform => `<span class="platform-badge">${platform}</span>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                        userProductList.appendChild(productCard);
+                    });
+                } catch (error) {
+                    console.error('Error loading products:', error);
+                    userProductList.innerHTML = '<p>Error loading products. Please try again.</p>';
+                }
+            }
+
+            // Load user profile
+            async function loadUserProfile() {
+                try {
+                    const userData = await getUserProfileFromFirebase();
+                    if (userData) {
+                        profileInfo.innerHTML = `
+                            <div class="form-group">
+                                <label>Name</label>
+                                <p><strong>${userData.name}</strong></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <p>${userData.email}</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <p>${userData.phone}</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Craft Type</label>
+                                <p>${userData.craftType}</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Region/Village</label>
+                                <p>${userData.region}</p>
+                            </div>
+                            <div class="form-group">
+                                <label>Experience</label>
+                                <p>${userData.experience} years</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error loading profile:', error);
+                    profileInfo.innerHTML = '<p>Error loading profile data.</p>';
+                }
+            }
+
+            // Check authentication state on page load
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // User is signed in
+                    dashboard.style.display = 'block';
+                    userName.textContent = user.displayName || 'Artisan';
+                    userAvatar.textContent = (user.displayName || 'A').charAt(0).toUpperCase();
+                    loadUserProducts();
+                } else {
+                    // User is signed out
+                    dashboard.style.display = 'none';
+                }
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
