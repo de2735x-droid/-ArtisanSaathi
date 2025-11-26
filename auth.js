@@ -84,4 +84,5 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     } catch (error) {
         showNotification('Signup error: ' + error.message, 'error');
     }
+
 });
