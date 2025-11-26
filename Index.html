@@ -388,31 +388,14 @@
             border-radius: 10px;
         }
         
-        .platform-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 1.5rem 0;
-        }
-        
-        .platform-option {
-            border: 2px solid #ddd;
+        /* Embedded Form Styles */
+        .embedded-form-container {
+            width: 100%;
+            height: 800px;
+            border: none;
             border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .platform-option.selected {
-            border-color: var(--accent);
-            background: rgba(255, 152, 0, 0.1);
-        }
-        
-        .platform-logo {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: var(--primary);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         /* Product List */
@@ -569,6 +552,10 @@
             
             .dashboard-tabs {
                 flex-direction: column;
+            }
+            
+            .embedded-form-container {
+                height: 600px;
             }
         }
     </style>
@@ -768,100 +755,102 @@
                 <div class="tab" id="logoutTab">Logout</div>
             </div>
             
-          <div class="tab-content active" id="add-product">
+<!-- Updated Product Form Section -->
+<div class="tab-content active" id="add-product">
     <div class="product-form">
-        <h3>List a New Product</h3>
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScphIxx3U00blVvwmklKLycJ4MbZMWt_ao8sHZB_i_Tboaakw/viewform?embedded=true" width="640" height="1747" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>        <iframe src="https://docs.google.com/forms/..." 
-                width="100%" 
-                height="800" 
-                frameborder="0" 
-                marginheight="0" 
-                marginwidth="0">
-            Loading…
-        </iframe>
+        <h3>List Your Product for Multiple Platforms</h3>
+        <p>Fill this simple form to sell on Amazon, Flipkart, Etsy & Meesho</p>
+        
+        <!-- Scrollable Formspree Form -->
+        <form class="embedded-form-container" action="https://formspree.io/f/mvgnowrv" method="POST" enctype="multipart/form-data" style="padding: 20px; background: white; border-radius: 8px; max-height: 70vh; overflow-y: auto;">
+            
+            <div class="form-group">
+                <label for="artisan-name">Artisan Name *</label>
+                <input type="text" id="artisan-name" name="artisan-name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Contact Email *</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="product-name">Product Name *</label>
+                <input type="text" id="product-name" name="product-name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Product Description *</label>
+                <textarea id="description" name="description" class="form-control" rows="3" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="category">Category *</label>
+                <select id="category" name="category" class="form-control" required>
+                    <option value="">Select Category</option>
+                    <option value="clothing">Clothing & Apparel</option>
+                    <option value="jewellery">Jewellery & Accessories</option>
+                    <option value="home">Home Decor</option>
+                    <option value="pottery">Pottery & Ceramics</option>
+                    <option value="textiles">Textiles & Weaving</option>
+                    <option value="woodwork">Wood Work</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Price (₹) *</label>
+                <input type="number" id="price" name="price" class="form-control" min="1" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="product-images">Product Photos *</label>
+                <input type="file" id="product-images" name="product-images" class="form-control" multiple accept="image/*" required>
+                <small style="color: #666;">Upload 3-5 product photos (JPEG, PNG, max 5MB each)</small>
+            </div>
+            
+            <div class="form-group">
+                <label>Select Platforms *</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="platforms" value="amazon"> 
+                        <i class="fab fa-amazon"></i> Amazon 
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="platforms" value="flipkart">
+                        <i class="fas fa-shopping-cart"></i> Flipkart 
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="platforms" value="etsy">
+                        <i class="fab fa-etsy"></i> Etsy
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="platforms" value="meesho">
+                        <i class="fas fa-store"></i> Meesho
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Additional Notes</label>
+                <textarea id="message" name="message" class="form-control" rows="2" placeholder="Any special requirements or notes..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+                <i class="fas fa-paper-plane"></i> Submit Product for Listing
+            </button>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666;">
+                <p>Our team will contact you within 24 hours to help with product photography and listing setup.</p>
+            </div>
+        </form>
     </div>
 </div>
-                        
-                        <div class="form-group">
-                            <label for="productDescription">Product Description</label>
-                            <textarea id="productDescription" class="form-control" rows="4" placeholder="Describe your product and its cultural significance" required></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="productCategory">Category</label>
-                            <select id="productCategory" class="form-control" required>
-                                <option value="">Select Category</option>
-                                <option value="clothing">Clothing & Apparel</option>
-                                <option value="jewelry">Jewelry & Accessories</option>
-                                <option value="home">Home & Living</option>
-                                <option value="art">Art & Collectibles</option>
-                                <option value="crafts">Craft Supplies</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="productPrice">Price (₹)</label>
-                            <input type="number" id="productPrice" class="form-control" placeholder="Enter price" min="1" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="productImage">Product Images</label>
-                            <input type="file" id="productImage" class="form-control" multiple accept="image/*">
-                            <small>Upload product images (JPEG, PNG, max 5MB each)</small>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Select Platforms for Listing</label>
-                            <div class="platform-selector">
-                                <div class="platform-option" data-platform="amazon">
-                                    <div class="platform-logo">
-                                        <i class="fab fa-amazon"></i>
-                                    </div>
-                                    <div>Amazon </div>
-                                </div>
-                                <div class="platform-option" data-platform="flipkart">
-                                    <div class="platform-logo">
-                                        <i class="fas fa-shopping-cart"></i>
-                                    </div>
-                                    <div>Flipkart </div>
-                                </div>
-                                <div class="platform-option" data-platform="etsy">
-                                    <div class="platform-logo">
-                                        <i class="fab fa-etsy"></i>
-                                    </div>
-                                    <div>Etsy</div>
-                                </div>
-                                <div class="platform-option" data-platform="meesho">
-                                    <div class="platform-logo">
-                                        <i class="fas fa-store"></i>
-                                    </div>
-                                    <div>Meesho</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary">List Product</button>
-                    </form>
-                </div>
-            </div>
-            
-            <div class="tab-content" id="my-products">
-                <h3>Your Products</h3>
-                <div class="product-list" id="userProductList">
-                    <!-- Products will be loaded here from Firebase -->
-                </div>
-            </div>
-            
-            <div class="tab-content" id="profile">
-                <h3>Your Profile</h3>
-                <div class="product-form">
-                    <div id="profileInfo">
-                        <!-- Profile info will be loaded here -->
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
 
     <!-- Footer -->
@@ -904,9 +893,9 @@
         </div>
     </footer>
 
-    <!-- Firebase Configuration with YOUR ACTUAL CONFIG -->
+    <!-- Firebase Configuration -->
     <script>
-        // YOUR FIREBASE CONFIG - EXACTLY FROM YOUR PROJECT
+        // YOUR FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyAqfh_WMKAD2VbmEcGOohNnWF9VC8MWhF4",
             authDomain: "artisansaathi.firebaseapp.com",
@@ -925,7 +914,6 @@
         const storage = firebase.storage();
 
         console.log("✅ Firebase initialized successfully!");
-        console.log("Project:", firebaseConfig.projectId);
     </script>
 
     <!-- Application Logic -->
@@ -946,7 +934,6 @@
             try {
                 console.log("Starting signup process...");
                 
-                // Create user with email and password
                 const userCredential = await auth.createUserWithEmailAndPassword(
                     userData.email, 
                     userData.password
@@ -954,12 +941,10 @@
                 
                 console.log("User created, updating profile...");
                 
-                // Update user profile
                 await userCredential.user.updateProfile({
                     displayName: userData.name
                 });
                 
-                // Save additional user data to Firestore
                 await db.collection('artisans').doc(userCredential.user.uid).set({
                     name: userData.name,
                     email: userData.email,
@@ -998,72 +983,6 @@
             }
         }
 
-        // Database functions
-        async function saveProductToFirebase(productData) {
-            const user = auth.currentUser;
-            if (!user) throw new Error('User not authenticated');
-
-            try {
-                let imageUrl = '';
-                
-                // Upload image if provided
-                if (productData.imageFile) {
-                    const storageRef = storage.ref();
-                    const imageRef = storageRef.child(`products/${user.uid}/${Date.now()}_${productData.imageFile.name}`);
-                    await imageRef.put(productData.imageFile);
-                    imageUrl = await imageRef.getDownloadURL();
-                }
-                
-                // Save product data to Firestore
-                const productRef = await db.collection('products').add({
-                    artisanId: user.uid,
-                    name: productData.name,
-                    description: productData.description,
-                    category: productData.category,
-                    price: productData.price,
-                    platforms: productData.platforms,
-                    imageUrl: imageUrl,
-                    status: 'pending',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                return productRef.id;
-            } catch (error) {
-                throw error;
-            }
-        }
-
-        async function getUserProductsFromFirebase() {
-            const user = auth.currentUser;
-            if (!user) return [];
-
-            try {
-                const snapshot = await db.collection('products')
-                    .where('artisanId', '==', user.uid)
-                    .orderBy('createdAt', 'desc')
-                    .get();
-                
-                return snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-            } catch (error) {
-                throw error;
-            }
-        }
-
-        async function getUserProfileFromFirebase() {
-            const user = auth.currentUser;
-            if (!user) return null;
-
-            try {
-                const doc = await db.collection('artisans').doc(user.uid).get();
-                return doc.exists ? doc.data() : null;
-            } catch (error) {
-                throw error;
-            }
-        }
-
         // DOM elements and event listeners
         document.addEventListener('DOMContentLoaded', function() {
             const loginBtn = document.getElementById('loginBtn');
@@ -1078,8 +997,6 @@
             const signupForm = document.getElementById('signupForm');
             const dashboard = document.getElementById('dashboard');
             const logoutTab = document.getElementById('logoutTab');
-            const productForm = document.getElementById('productForm');
-            const userProductList = document.getElementById('userProductList');
             const userName = document.getElementById('userName');
             const userAvatar = document.getElementById('userAvatar');
             const profileInfo = document.getElementById('profileInfo');
@@ -1131,225 +1048,67 @@
                 }
             });
 
-            // Signup form
-            signupForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const userData = {
-                    name: document.getElementById('signupName').value,
-                    email: document.getElementById('signupEmail').value,
-                    phone: document.getElementById('signupPhone').value,
-                    craftType: document.getElementById('craftType').value,
-                    region: document.getElementById('region').value,
-                    experience: parseInt(document.getElementById('experience').value),
-                    password: document.getElementById('signupPassword').value
-                };
-                
-                try {
-                    await authSignUp(userData);
-                    signupModal.style.display = 'none';
-                    showNotification('Account created successfully!', 'success');
-                } catch (error) {
-                    showNotification('Signup error: ' + error.message, 'error');
-                }
-            });
+           // Signup form
+signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const userData = {
+        name: document.getElementById('signupName').value,
+        email: document.getElementById('signupEmail').value,
+        phone: document.getElementById('signupPhone').value,
+        craftType: document.getElementById('craftType').value,
+        region: document.getElementById('region').value,
+        experience: parseInt(document.getElementById('experience').value),
+        password: document.getElementById('signupPassword').value
+    };
+    
+    try {
+        await authSignUp(userData);
+        signupModal.style.display = 'none';
+        showNotification('🎉 Account created successfully! Taking you to your dashboard...', 'success');
+        
+        // Automatically show dashboard - no need to login again
+        dashboard.style.display = 'block';
+        userName.textContent = userData.name;
+        userAvatar.textContent = userData.name.charAt(0).toUpperCase();
+        
+    } catch (error) {
+        showNotification('Signup error: ' + error.message, 'error');
+    }
+});
 
-            // Logout functionality
-            logoutTab.addEventListener('click', () => {
-                authSignOut();
-            });
-
+         // Logout functionality with confirmation
+logoutTab.addEventListener('click', () => {
+    if (confirm('Are you sure you want to log out?\n\nClick "OK" to logout or "Cancel" to stay.')) {
+        authSignOut();
+    }
+});
             // Tab functionality
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     if (tab === logoutTab) return;
                     
-                    // Remove active class from all tabs and contents
                     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                     
-                    // Add active class to clicked tab and corresponding content
                     tab.classList.add('active');
                     const tabId = tab.getAttribute('data-tab');
                     document.getElementById(tabId).classList.add('active');
-                    
-                    // Load profile if profile tab is clicked
-                    if (tabId === 'profile') {
-                        loadUserProfile();
-                    }
-                    
-                    // Load products if products tab is clicked
-                    if (tabId === 'my-products') {
-                        loadUserProducts();
-                    }
                 });
             });
-            
-            // Platform selection
-            document.querySelectorAll('.platform-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    option.classList.toggle('selected');
-                });
-            });
-            
-            // Product form submission
-            productForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                // Add this for debugging
-console.log("=== DEBUG PRODUCT UPLOAD ===");
-console.log("Product Data:", {
-    name: productName,
-    price: productPrice,
-    platforms: selectedPlatforms,
-    user: auth.currentUser
-});
-
-// Check if user is logged in
-if (!auth.currentUser) {
-    showNotification('Please login first', 'error');
-    return;
-}
-                // Get form values
-                const productName = document.getElementById('productName').value;
-                const productDescription = document.getElementById('productDescription').value;
-                const productCategory = document.getElementById('productCategory').value;
-                const productPrice = document.getElementById('productPrice').value;
-                const productImage = document.getElementById('productImage').files[0];
-                
-                // Get selected platforms
-                const selectedPlatforms = [];
-                document.querySelectorAll('.platform-option.selected').forEach(platform => {
-                    selectedPlatforms.push(platform.getAttribute('data-platform'));
-                });
-                
-                // Validation
-                if (!productName || !productPrice || selectedPlatforms.length === 0) {
-                    showNotification('Please fill in all required fields and select at least one platform.', 'error');
-                    return;
-                }
-                
-                try {
-                    // Save product to Firebase
-                    const productId = await saveProductToFirebase({
-                        name: productName,
-                        description: productDescription,
-                        category: productCategory,
-                        price: parseFloat(productPrice),
-                        platforms: selectedPlatforms,
-                        imageFile: productImage
-                    });
-                    
-                    showNotification(`Product "${productName}" listed successfully!`);
-                    
-                    // Reset form
-                    this.reset();
-                    document.querySelectorAll('.platform-option.selected').forEach(platform => {
-                        platform.classList.remove('selected');
-                    });
-                    
-                    // Switch to My Products tab and reload
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    document.querySelector('[data-tab="my-products"]').classList.add('active');
-                    document.getElementById('my-products').classList.add('active');
-                    
-                    loadUserProducts();
-                    
-                } catch (error) {
-                    showNotification('Error saving product: ' + error.message, 'error');
-                }
-            });
-
-            // Load user products from Firebase
-            async function loadUserProducts() {
-                try {
-                    const products = await getUserProductsFromFirebase();
-                    userProductList.innerHTML = '';
-                    
-                    if (products.length === 0) {
-                        userProductList.innerHTML = '<p>No products listed yet. Add your first product!</p>';
-                        return;
-                    }
-                    
-                    products.forEach(product => {
-                        const productCard = document.createElement('div');
-                        productCard.className = 'product-card';
-                        productCard.innerHTML = `
-                            <div class="product-image">
-                                ${product.imageUrl ? 
-                                    `<img src="${product.imageUrl}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;">` : 
-                                    `<i class="fas fa-image fa-3x"></i>`
-                                }
-                            </div>
-                            <div class="product-details">
-                                <div class="product-title">${product.name}</div>
-                                <div class="product-price">₹${product.price}</div>
-                                <div class="product-platforms">
-                                    ${product.platforms.map(platform => `<span class="platform-badge">${platform}</span>`).join('')}
-                                </div>
-                            </div>
-                        `;
-                        userProductList.appendChild(productCard);
-                    });
-                } catch (error) {
-                    console.error('Error loading products:', error);
-                    userProductList.innerHTML = '<p>Error loading products. Please try again.</p>';
-                }
-            }
-
-            // Load user profile
-            async function loadUserProfile() {
-                try {
-                    const userData = await getUserProfileFromFirebase();
-                    if (userData) {
-                        profileInfo.innerHTML = `
-                            <div class="form-group">
-                                <label>Name</label>
-                                <p><strong>${userData.name}</strong></p>
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <p>${userData.email}</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Phone</label>
-                                <p>${userData.phone}</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Craft Type</label>
-                                <p>${userData.craftType}</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Region/Village</label>
-                                <p>${userData.region}</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Experience</label>
-                                <p>${userData.experience} years</p>
-                            </div>
-                        `;
-                    }
-                } catch (error) {
-                    console.error('Error loading profile:', error);
-                    profileInfo.innerHTML = '<p>Error loading profile data.</p>';
-                }
-            }
 
             // Check authentication state on page load
             auth.onAuthStateChanged((user) => {
                 if (user) {
-                    // User is signed in
                     dashboard.style.display = 'block';
                     userName.textContent = user.displayName || 'Artisan';
                     userAvatar.textContent = (user.displayName || 'A').charAt(0).toUpperCase();
-                    loadUserProducts();
                 } else {
-                    // User is signed out
                     dashboard.style.display = 'none';
                 }
             });
 
-            // Smooth scrolling for navigation links
+                       // Smooth scrolling for navigation links
             document.querySelectorAll('nav a').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1365,9 +1124,45 @@ if (!auth.currentUser) {
                     }
                 });
             });
+
+            // Simple Product Form Handler
+            document.getElementById('simpleProductForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const productData = {
+                    name: document.getElementById('productName').value,
+                    description: document.getElementById('productDescription').value,
+                    category: document.getElementById('productCategory').value,
+                    price: document.getElementById('productPrice').value,
+                    platforms: Array.from(document.querySelectorAll('input[name="platform"]:checked')).map(cb => cb.value),
+                    artisan: auth.currentUser ? auth.currentUser.displayName : 'Unknown',
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Validate
+                if (productData.platforms.length === 0) {
+                    showNotification('Please select at least one platform', 'error');
+                    return;
+                }
+                
+                console.log('Product Submission:', productData);
+                
+                // Show success message
+                document.getElementById('formSuccess').style.display = 'block';
+                document.getElementById('simpleProductForm').reset();
+                
+                // Show notification
+                showNotification(`Product "${productData.name}" submitted successfully! Our team will contact you soon.`);
+                
+                // Scroll to success message
+                document.getElementById('formSuccess').scrollIntoView({ behavior: 'smooth' });
+            });
         });
     </script>
 </body>
 </html>
+
+
 
 
