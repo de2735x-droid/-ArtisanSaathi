@@ -62,4 +62,5 @@ async function getUserProfileFromFirebase() {
     } catch (error) {
         throw error;
     }
+
 }
