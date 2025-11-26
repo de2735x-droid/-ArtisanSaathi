@@ -397,6 +397,39 @@
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+        /* Google Translate Styles */
+#google_translate_element {
+    margin-left: 20px;
+}
+
+.goog-te-gadget {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 0.9rem !important;
+}
+
+.goog-te-menu-value {
+    color: white !important;
+}
+
+.goog-te-menu-value span {
+    color: white !important;
+}
+
+/* Hide Google branding */
+.goog-te-banner-frame {
+    display: none !important;
+}
+
+.goog-te-gadget-simple {
+    background: transparent !important;
+    border: 1px solid rgba(255,255,255,0.3) !important;
+    border-radius: 5px !important;
+    padding: 5px 10px !important;
+}
+
+body {
+    top: 0px !important;
+}
         
         /* Product List */
         .product-list {
@@ -584,6 +617,13 @@
                     <button class="btn btn-outline" id="loginBtn">Login</button>
                     <button class="btn btn-primary" id="signupBtn">Sign Up</button>
                 </div>
+                <div class="auth-buttons">
+    <button class="btn btn-outline" id="loginBtn">Login</button>
+    <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+</div>
+
+<!-- Google Translate Widget -->
+<div id="google_translate_element"></div>
             </div>
         </div>
     </header>
@@ -1160,8 +1200,21 @@ logoutTab.addEventListener('click', () => {
             });
         });
     </script>
+    <!-- Google Translate -->
+<script>
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,bn,te,mr,ta,ur,gu,kn,or,ml,pa,as,bo,brx,doi,ks,kok,mai,mni,ne,sa,sd,si,ur',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+    }, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
+
 
 
 
