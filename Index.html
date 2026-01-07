@@ -798,18 +798,17 @@ body {
         
         <!-- Simple Working Form - Replace YOUR_FORM_ID when you get it -->
         <iframe class="airtable-embed" 
-                src="https://airtable.com/embed/appTR5Aet7H5UBxlc/pagj2PMPzdWKS6FZI/form" 
-                frameborder="0" 
-                onmousewheel="" 
-                width="100%" 
-                height="700"
-                style="border: none; border-radius: 8px; background: white;">
-        </iframe>
+        src="https://airtable.com/embed/appTR5Aet7H5UBxlc/pagj2PMPzdWKS6FZI/form?prefill_User%20Email=USER_EMAIL_PLACEHOLDER" 
+        frameborder="0" 
+        onmousewheel="" 
+        width="100%" 
+        height="700"
+        style="border: none; border-radius: 8px; background: white;">
+</iframe>
         
         <div style="text-align: center; margin-top: 20px; color: #666;">
             <p>✅ Form submissions save directly to our database</p>
-            <p><a href="https://airtable.com/embed/appTR5Aet7H5UBxlc/pagj2PMPzdWKS6FZI/form" target="_blank">Open form in new tab</a></p>
-        </div>
+<p><a href="https://airtable.com/embed/appTR5Aet7H5UBxlc/pagj2PMPzdWKS6FZI/form?prefill_User%20Email=USER_EMAIL_PLACEHOLDER" target="_blank">Open form in new tab</a></p>        </div>
     </div>
 </div>   </section>
 
@@ -1067,6 +1066,41 @@ logoutTab.addEventListener('click', () => {
                     dashboard.style.display = 'none';
                 }
             });
+            // Function to update Airtable form with logged-in user's email
+function updateAirtableFormEmail() {
+    const user = auth.currentUser;
+    if (!user || !user.email) return;
+    
+    const iframes = document.querySelectorAll('.airtable-embed');
+    iframes.forEach(iframe => {
+        let currentSrc = iframe.src;
+        
+        // Check if URL has our placeholder
+        if (currentSrc.includes('USER_EMAIL_PLACEHOLDER')) {
+            // Replace placeholder with actual user email
+            const updatedSrc = currentSrc.replace(
+                'USER_EMAIL_PLACEHOLDER', 
+                encodeURIComponent(user.email)
+            );
+            iframe.src = updatedSrc;
+        }
+    });
+}
+
+// Update form when user logs in
+auth.onAuthStateChanged((user) => {
+    if (user && user.email) {
+        // Small delay to ensure iframe is loaded
+        setTimeout(updateAirtableFormEmail, 1000);
+    }
+});
+
+// Also update when "Add Product" tab is clicked
+document.querySelector('[data-tab="add-product"]')?.addEventListener('click', function() {
+    if (auth.currentUser && auth.currentUser.email) {
+        setTimeout(updateAirtableFormEmail, 300);
+    }
+});
 
       
     
@@ -1119,6 +1153,7 @@ function googleTranslateElementInit() {
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
+
 
 
 
