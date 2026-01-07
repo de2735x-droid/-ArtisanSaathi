@@ -790,24 +790,35 @@ body {
                 <div class="tab" id="logoutTab">Logout</div>
             </div>
 
-            <!-- ADD THIS CODE RIGHT HERE - My Products Section -->
-            <div class="tab-content" id="my-products">
-                <div class="product-form">
-                    <h3>Your Products</h3>
-                    <div class="product-list" id="userProductList">
-                        <!-- Products will load here -->
-                        <div style="text-align: center; padding: 3rem; color: #666; background: #f8f9fa; border-radius: 10px;">
-                            <i class="fas fa-box-open fa-3x" style="margin-bottom: 1rem;"></i>
-                            <h4>No Products Listed Yet</h4>
-                            <p>Products you submit via the <strong>"Add Product"</strong> form will appear here.</p>
-                            <p>Our team will update the status as they are processed for each marketplace.</p>
-                            <a href="#add-product" style="display: inline-block; margin-top: 1rem;" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> List Your First Product
-                            </a>
-                        </div>
-                    </div>
-                </div>
+ <div class="tab-content" id="my-products">
+    <div class="product-form">
+        <h3>Your Products</h3>
+        
+        <div id="productsDisplay">
+            <div style="text-align: center; padding: 3rem; color: #666; background: #f8f9fa; border-radius: 10px;">
+                <i class="fas fa-box-open fa-3x" style="margin-bottom: 1rem;"></i>
+                <h4 id="productStatusTitle">No Products Listed Yet</h4>
+                <p id="productStatusMessage">Products you submit via the <strong>"Add Product"</strong> form will appear here.</p>
+                <p>Status updates: <span style="color: #ff9800; font-weight: bold;">Pending</span> → <span style="color: #2196f3; font-weight: bold;">Under Review</span> → <span style="color: #4caf50; font-weight: bold;">Live</span></p>
+                <a href="#add-product" style="display: inline-block; margin-top: 1rem;" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> List Your First Product
+                </a>
             </div>
+        </div>
+        
+        <!-- Add this section to explain the process -->
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #e8f5e8; border-radius: 8px;">
+            <h5><i class="fas fa-info-circle"></i> How Product Listing Works:</h5>
+            <ol style="margin-left: 1.5rem; margin-top: 1rem;">
+                <li>Submit product via the Airtable form</li>
+                <li>Our team reviews and processes it (24-48 hours)</li>
+                <li>Product gets listed on selected platforms</li>
+                <li>You'll receive email updates at each stage</li>
+                <li>Products will appear here with live status</li>
+            </ol>
+        </div>
+    </div>
+</div>
 
             <!-- ADD THIS CODE RIGHT HERE - My Profile Section -->
             <div class="tab-content" id="profile">
@@ -1113,6 +1124,29 @@ logoutTab.addEventListener('click', () => {
                     dashboard.style.display = 'none';
                 }
             });
+
+            // ============== UPDATE PRODUCTS MESSAGE ==============
+function updateProductsMessage() {
+    const user = auth.currentUser;
+    if (!user) return;
+    
+    const title = document.getElementById('productStatusTitle');
+    const message = document.getElementById('productStatusMessage');
+    
+    if (title && message) {
+        title.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Checking Your Products...`;
+        
+        // Simulate checking (for demo purposes)
+        setTimeout(() => {
+            title.textContent = "No Products Found";
+            message.innerHTML = `Hello <strong>${user.displayName || user.email}</strong>,<br>
+                We haven't received any product submissions from you yet.`;
+        }, 1500);
+    }
+}
+
+// Update when products tab is clicked
+document.querySelector('[data-tab="my-products"]').addEventListener('click', updateProductsMessage);
             // Function to update Airtable form with logged-in user's email
 function updateAirtableFormEmail() {
     const user = auth.currentUser;
@@ -1204,33 +1238,116 @@ document.querySelector('[data-tab="profile"]').addEventListener('click', functio
     loadUserProfile();
 });
 
-// Function to load user profile from Firebase
+// ============== FIX USER PROFILE ==============
 async function loadUserProfile() {
     try {
         const user = auth.currentUser;
-        if (!user) return;
+        console.log("Current user:", user); // Debug log
+        
+        if (!user) {
+            console.log("No user logged in");
+            return;
+        }
 
-        // Get user data from Firestore
+        // Try to get user data from Firestore
+        console.log("Fetching user data for UID:", user.uid);
         const userDoc = await db.collection('artisans').doc(user.uid).get();
+        console.log("User document exists:", userDoc.exists);
         
         if (userDoc.exists) {
             const userData = userDoc.data();
+            console.log("User data:", userData);
             
             // Update the profile display
-            document.getElementById('profileName').textContent = userData.name || 'Not set';
-            document.getElementById('profileEmail').textContent = user.email;
-            document.getElementById('profileCraft').textContent = userData.craftType || 'Not set';
-            document.getElementById('profileRegion').textContent = userData.region || 'Not set';
+            document.getElementById('profileName').textContent = userData.name || 'Not provided';
+            document.getElementById('profileEmail').textContent = user.email || 'Not provided';
+            document.getElementById('profileCraft').textContent = userData.craftType || 'Not provided';
+            document.getElementById('profileRegion').textContent = userData.region || 'Not provided';
             document.getElementById('profileExperience').textContent = 
-                userData.experience ? `${userData.experience} years` : 'Not set';
+                userData.experience ? `${userData.experience} years` : 'Not provided';
+            
+            // Also update dashboard welcome
+            const welcomeName = document.getElementById('userName');
+            const userAvatar = document.getElementById('userAvatar');
+            if (welcomeName) welcomeName.textContent = userData.name || 'Artisan';
+            if (userAvatar) userAvatar.textContent = (userData.name?.charAt(0) || 'A').toUpperCase();
+        } else {
+            console.log("No user data found in Firestore");
+            // Show a helpful message
+            document.getElementById('profileInfo').innerHTML = `
+                <div style="background: #fff3cd; padding: 15px; border-radius: 5px; border-left: 4px solid #ffc107;">
+                    <p><strong>⚠️ Profile Data Not Found</strong></p>
+                    <p>Your account exists but profile data wasn't saved properly.</p>
+                    <p>Please contact support or create a new account.</p>
+                </div>
+            `;
         }
     } catch (error) {
-        console.error('Error loading profile:', error);
+        console.error("Error loading profile:", error);
+        // Show error to user
+        document.getElementById('profileInfo').innerHTML = `
+            <div style="background: #f8d7da; padding: 15px; border-radius: 5px; border-left: 4px solid #dc3545;">
+                <p><strong>❌ Error Loading Profile</strong></p>
+                <p>${error.message}</p>
+                <p>Check console for details (F12 → Console).</p>
+            </div>
+        `;
     }
 }
+
+// Load profile when clicking the "My Profile" tab
+document.querySelector('[data-tab="profile"]').addEventListener('click', loadUserProfile);
+
+// Also load if profile tab is active on page load
+if (document.querySelector('[data-tab="profile"]').classList.contains('active')) {
+    loadUserProfile();
+}
+    </script>
+    <script>
+        // ============== DEBUG: CHECK FIREBASE DATA ==============
+async function debugFirebaseData() {
+    const user = auth.currentUser;
+    if (!user) {
+        console.log("❌ No user logged in");
+        return;
+    }
+    
+    console.log("=== FIREBASE DEBUG INFO ===");
+    console.log("User UID:", user.uid);
+    console.log("User Email:", user.email);
+    console.log("Display Name:", user.displayName);
+    
+    // Check if user exists in 'artisans' collection
+    try {
+        const userDoc = await db.collection('artisans').doc(user.uid).get();
+        console.log("User in 'artisans' collection:", userDoc.exists);
+        if (userDoc.exists) {
+            console.log("User data:", userDoc.data());
+        }
+    } catch (error) {
+        console.log("Error checking artisans collection:", error);
+    }
+    
+    // Check products (if you have that collection)
+    try {
+        const productsSnapshot = await db.collection('products')
+            .where('artisanId', '==', user.uid)
+            .get();
+        console.log("Number of products:", productsSnapshot.size);
+        productsSnapshot.forEach(doc => {
+            console.log("Product:", doc.id, doc.data());
+        });
+    } catch (error) {
+        console.log("Error checking products:", error);
+    }
+}
+
+// Run debug (open console with F12 to see results)
+debugFirebaseData();
     </script>
 </body>
 </html>
+
 
 
 
